@@ -1,0 +1,19 @@
+{
+  "name": "angular-sails-socket",
+  "version": "0.1.0",
+  "authors": [
+    "Albert Martin <albert@bethel.io>"
+  ],
+  "description": "Helpers to bind Angular to Sails' implementation of Socket.io",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "main": "dist/angular-dom.min.js",
+  "dependencies": {
+    "angular": "1.4"
+  }
+}
