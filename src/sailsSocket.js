@@ -4,7 +4,7 @@
  * License: MIT
  */
 angular.module('bethel.sailsSocket', [])
-.service('sailsSocket', ['$q', '$rootScope', function ($q, $rootScope) {
+.service('sailsSocket', ['$q', '$rootScope', '$http', function ($q, $rootScope, $http) {
 
   if (!io.socket) throw new Error('Missing required `sails.io.js` dependency.');
 
@@ -12,6 +12,11 @@ angular.module('bethel.sailsSocket', [])
     _csrf: '',
     outstanding: 0
   };
+
+  $http.get('/csrfToken')
+    .success(function(response) {
+      $rootScope.sailsSocket._csrf = response._csrf;
+    });
 
   var populateQuery = function(from, params, many) {
     if (from[0] !== '/') from = '/'.concat(from);
@@ -64,10 +69,6 @@ angular.module('bethel.sailsSocket', [])
       });
     });
   };
-
-  this.get('/csrfToken').then(function (response) {
-    $rootScope.sailsSocket._csrf = response._csrf;
-  });
 
   this.editable = function(scope, what, editableFields, cb) {
     cb = cb || function(){};
