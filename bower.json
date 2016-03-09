@@ -1,8 +1,9 @@
 {
   "name": "angular-sails-socket",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "authors": [
-    "Albert Martin <albert@bethel.io>"
+    "Albert Martin <albert@bethel.io>",
+    "Josh Gillespie <josh@bethel.io>"
   ],
   "description": "Helpers to bind Angular to Sails' implementation of Socket.io",
   "license": "MIT",
