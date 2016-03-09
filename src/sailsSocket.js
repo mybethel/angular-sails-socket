@@ -70,6 +70,15 @@ angular.module('bethel.sailsSocket', [])
     });
   };
 
+  this.delete = function (where, what) {
+    what._csrf = $rootScope.socketService._csrf;
+    return $q(function (resolve, reject) {
+      io.socket.delete(where, what, function(data, response) {
+        return (response.statusCode < 400) ? resolve(data) : reject(data);
+      });
+    });
+  };
+
   this.editable = function(scope, what, editableFields, cb) {
     cb = cb || function(){};
     scope.$watch(what, function (newValue, oldValue) {
