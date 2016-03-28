@@ -1,2 +1,6 @@
+.eslintrc.js
+.travis.yml
 bower.json
+coverage
 Gruntfile.js
+karma.conf.js
