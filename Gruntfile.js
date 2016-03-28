@@ -30,13 +30,13 @@ module.exports = function(grunt) {
         footer: '})(angular);'
       },
       dist: {
-        src: ['src/angular-sails-socket.js', 'src/*.js'],
+        src: ['src/*.js', '!src/*.spec.js'],
         dest: 'dist/angular-sails-socket.js'
       }
     },
 
     eslint: {
-      target: ['Gruntfile.js', 'src/*.js', 'test/**/*.js']
+      target: ['Gruntfile.js', 'src/*.js', '!src/*.spec.js', 'test/**/*.js']
     },
 
     pkg: grunt.file.readJSON('package.json'),

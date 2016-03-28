@@ -32,7 +32,7 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
     var socket = (io.sails && io.sails.connect || io.connect)(sailsSocket.url, sailsSocket.config);
 
     if (this.csrf !== false) {
-      socket.get('/csrfToken', data => {
+      socket.get('/csrfToken', function(data) {
         sailsSocket.csrf = data._csrf;
       });
     }
@@ -64,6 +64,8 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
     }
 
     return {
+
+      io: socket,
 
       get: function(where) {
         return $q(function(resolve, reject) {
