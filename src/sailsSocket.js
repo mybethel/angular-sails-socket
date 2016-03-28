@@ -33,6 +33,10 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
 
     if (this.csrf !== false) {
       socket.get('/csrfToken', function(data) {
+        if (!data) {
+          sailsSocket.csrf = false;
+          return;
+        }
         sailsSocket.csrf = data._csrf;
       });
     }
