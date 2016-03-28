@@ -12,7 +12,6 @@
     "grunt": "^1.0.0-rc1",
     "grunt-babel": "^6.0.0",
     "grunt-cli": "^1.1.0",
-    "grunt-contrib-concat": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.0",
     "grunt-eslint": "^18.0.0",
     "jasmine": "^2.4.1",

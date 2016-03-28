@@ -5,35 +5,16 @@ module.exports = function(grunt) {
 
     babel: {
       options: {
-        sourceMap: true,
         presets: ['es2015']
       },
       dist: {
         files: {
-          'dist/angular-sails-socket.js': 'dist/angular-sails-socket.js'
+          'dist/angular-sails-socket.js': ['src/*.js', '!src/*.spec.js']
         }
       }
     },
 
     clean: ['dist'],
-
-    concat: {
-      options: {
-        stripBanners: true,
-        banner: '/*\n' +
-                ' * @license Angular DOM\n' +
-                ' * (c) 2015 Bethel Technologies, LLC http://getbethel.com\n' +
-                ' * License: MIT\n' +
-                ' */\n' +
-                '(function(angular) {' +
-                "'use strict';",
-        footer: '})(angular);'
-      },
-      dist: {
-        src: ['src/*.js', '!src/*.spec.js'],
-        dest: 'dist/angular-sails-socket.js'
-      }
-    },
 
     eslint: {
       target: ['Gruntfile.js', 'src/*.js', '!src/*.spec.js', 'test/**/*.js']
@@ -43,7 +24,14 @@ module.exports = function(grunt) {
 
     uglify: {
       options: {
-        preserveComments: 'some',
+        banner: '/*\n' +
+                ' * @license <%= pkg.name %> - v<%= pkg.version %>\n' +
+                ' * (c) 2015 Bethel Technologies, LLC http://getbethel.com\n' +
+                ' * License: <%= pkg.license %>\n' +
+                ' */\n' +
+                '(function(angular) {',
+        footer: '})(angular);',
+        preserveComments: false,
         report: 'min'
       },
       dist: {
@@ -58,6 +46,6 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('test', ['eslint']);
-  grunt.registerTask('default', ['eslint', 'concat', 'babel', 'uglify']);
+  grunt.registerTask('default', ['eslint', 'babel', 'uglify']);
 
 };
