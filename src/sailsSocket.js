@@ -72,7 +72,7 @@ angular.module('bethel.sailsSocket', [])
 
   this.delete = function (where, what) {
     what = what || {};
-    what._csrf = $rootScope.socketService._csrf;
+    what._csrf = $rootScope.sailsSocket._csrf;
     return $q(function (resolve, reject) {
       io.socket.delete(where, what, function(data, response) {
         return (response.statusCode < 400) ? resolve(data) : reject(data);
