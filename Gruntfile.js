@@ -1,51 +1,63 @@
 module.exports = function(grunt) {
-   'use strict';
+  'use strict';
 
-   grunt.initConfig({
-      pkg: grunt.file.readJSON('package.json'),
-      bower: grunt.file.readJSON('bower.json'),
+  grunt.initConfig({
 
-      jshint: {
-         all: ['Gruntfile.js', 'src/*.js', 'test/**/*.js']
+    babel: {
+      options: {
+        sourceMap: true,
+        presets: ['es2015']
       },
+      dist: {
+        files: {
+          'dist/angular-sails-socket.js': 'dist/angular-sails-socket.js'
+        }
+      }
+    },
 
-      concat: {
-         options: {
-            stripBanners: true,
-            banner: '/*\n' +
-                    ' * @license Angular DOM\n' +
-                    ' * (c) 2015 Bethel Technologies, LLC http://getbethel.com\n' +
-                    ' * License: MIT\n' +
-                    ' */\n' +
-                    '(function(angular) {' +
-                    "'use strict';",
-            footer: '})(angular);'
-         },
-         dist: {
-            src: ['src/angular-sails-socket.js', 'src/*.js'],
-            dest: 'dist/angular-sails-socket.min.js'
-         }
+    clean: ['dist'],
+
+    concat: {
+      options: {
+        stripBanners: true,
+        banner: '/*\n' +
+                ' * @license Angular DOM\n' +
+                ' * (c) 2015 Bethel Technologies, LLC http://getbethel.com\n' +
+                ' * License: MIT\n' +
+                ' */\n' +
+                '(function(angular) {' +
+                "'use strict';",
+        footer: '})(angular);'
       },
+      dist: {
+        src: ['src/angular-sails-socket.js', 'src/*.js'],
+        dest: 'dist/angular-sails-socket.js'
+      }
+    },
 
-      uglify: {
-         options: {
-            preserveComments: 'some',
-            report: 'min'
-         },
-         dist: {
-            files: [{
-               expand: true,
-               src: 'dist/angular-sails-socket.min.js'
-            }]
-         }
+    eslint: {
+      target: ['Gruntfile.js', 'src/*.js', 'test/**/*.js']
+    },
+
+    pkg: grunt.file.readJSON('package.json'),
+
+    uglify: {
+      options: {
+        preserveComments: 'some',
+        report: 'min'
       },
+      dist: {
+        files: {
+          'dist/angular-sails-socket.min.js': ['dist/angular-sails-socket.js']
+        }
+      }
+    }
 
-      clean: ['dist']
-   });
+  });
 
-   require('load-grunt-tasks')(grunt);
+  require('load-grunt-tasks')(grunt);
 
-   grunt.registerTask('test', ['jshint']);
-   grunt.registerTask('default', ['jshint', 'concat:dist', 'uglify:dist']);
+  grunt.registerTask('test', ['eslint']);
+  grunt.registerTask('default', ['eslint', 'concat', 'babel', 'uglify']);
 
 };
