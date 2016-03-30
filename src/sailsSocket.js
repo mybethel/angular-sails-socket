@@ -32,7 +32,7 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
     var socket = (io.sails && io.sails.connect || io.connect)(sailsSocket.url, sailsSocket.config);
 
     if (this.csrf !== false) {
-      socket.get('/csrfToken', function(data) {
+      $http.get('/csrfToken').success(function(data) {
         if (!data) {
           sailsSocket.csrf = false;
           return;
