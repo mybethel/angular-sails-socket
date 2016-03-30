@@ -1,6 +1,6 @@
 {
   "name": "angular-sails-socket",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Helpers to bind Angular to Sails' implementation of Socket.io",
   "main": "src/sailsSocket.js",
   "devDependencies": {
