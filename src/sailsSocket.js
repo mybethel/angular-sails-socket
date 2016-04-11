@@ -3,9 +3,13 @@
  * (c) 2015 Bethel Technologies, LLC http://getbethel.com
  * License: MIT
  */
+if (typeof io !== 'undefined' && io.sails) {
+  io.sails.autoConnect = false;
+}
+
 angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
 
-  if (!io || !io.socket) throw new Error('Missing required `sails.io.js` dependency.');
+  if (typeof io === 'undefined' || !io.socket) throw new Error('Missing required `sails.io.js` dependency.');
 
   // On sites which require a CSRF token, this can be injected in each request.
   // If your site is configured to not use a CSRF token, set this to `false` to

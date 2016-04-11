@@ -29,8 +29,8 @@ module.exports = function(grunt) {
                 ' * (c) 2015 Bethel Technologies, LLC http://getbethel.com\n' +
                 ' * License: <%= pkg.license %>\n' +
                 ' */\n' +
-                '(function(angular) {',
-        footer: '})(angular);',
+                '(function(angular, io) {',
+        footer: '})(angular, io);',
         preserveComments: false,
         report: 'min'
       },
