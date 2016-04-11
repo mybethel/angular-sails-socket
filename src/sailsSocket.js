@@ -5,7 +5,7 @@
  */
 angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
 
-  if (!io.socket) throw new Error('Missing required `sails.io.js` dependency.');
+  if (!io || !io.socket) throw new Error('Missing required `sails.io.js` dependency.');
 
   // On sites which require a CSRF token, this can be injected in each request.
   // If your site is configured to not use a CSRF token, set this to `false` to
