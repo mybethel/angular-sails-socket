@@ -9,7 +9,7 @@ if (typeof io !== 'undefined' && io.sails) {
 
 angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
 
-  if (typeof io === 'undefined' || !io.socket) throw new Error('Missing required `sails.io.js` dependency.');
+  if (typeof io === 'undefined' || !io.sails) throw new Error('Missing required `sails.io.js` dependency.');
 
   // On sites which require a CSRF token, this can be injected in each request.
   // If your site is configured to not use a CSRF token, set this to `false` to
@@ -24,7 +24,6 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
   // For example, production applications may want to disable polling.
   // @see http://sailsjs.org/documentation/reference/web-sockets/socket-client#?configuring-the-sailsiojs-library
   this.config = {
-    autoConnect: true,
     environment: 'development',
     transports: ['polling', 'websocket']
   };
