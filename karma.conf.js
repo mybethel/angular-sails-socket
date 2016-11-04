@@ -5,20 +5,20 @@ module.exports = function(config) {
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/sails.io.js-dist/sails.io.js',
-      'src/*.js'
+      'src/*.js',
     ],
     preprocessors: {
-      'src/*!(*.spec).js': 'coverage'
+      'src/**/!(*.spec).js': ['coverage', 'babel'],
     },
     reporters: ['spec', 'coverage'],
     coverageReporter: {
       reporters: [
-        { type: 'json', subdir: 'angular' },
-        { type: 'lcov', subdir: 'angular' }
-      ]
+        {type: 'json', subdir: 'angular'},
+        {type: 'lcov', subdir: 'angular'},
+      ],
     },
     autoWatch: false,
     browsers: ['PhantomJS'],
-    singleRun: true
+    singleRun: true,
   });
 };

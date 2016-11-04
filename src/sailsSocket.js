@@ -8,8 +8,8 @@ if (typeof io !== 'undefined' && io.sails) {
 }
 
 angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
-
-  if (typeof io === 'undefined' || !io.sails) throw new Error('Missing required `sails.io.js` dependency.');
+  if (typeof io === 'undefined' || !io.sails)
+    throw new Error('Missing required `sails.io.js` dependency.');
 
   // On sites which require a CSRF token, this can be injected in each request.
   // If your site is configured to not use a CSRF token, set this to `false` to
@@ -25,14 +25,14 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
   // @see http://sailsjs.org/documentation/reference/web-sockets/socket-client#?configuring-the-sailsiojs-library
   this.config = {
     environment: 'development',
-    transports: ['polling', 'websocket']
+    transports: ['polling', 'websocket'],
   };
 
-  var sailsSocket = this;
+  const sailsSocket = this;
 
   this.$get = ['$http', '$q', '$rootScope', function($http, $q, $rootScope) {
-
-    var socket = (io.sails && io.sails.connect || io.connect)(sailsSocket.url, sailsSocket.config);
+    const connect = io.sails && io.sails.connect || io.connect;
+    const socket = connect(sailsSocket.url, sailsSocket.config);
 
     if (this.csrf !== false) {
       $http.get('/csrfToken').success(function(data) {
@@ -44,10 +44,19 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
       });
     }
 
+    /**
+     * Helper function to populate a socket request to either an array or an
+     * object depending on whether one or multiple items are requested.
+     * @param {string} from - The URL to request over sockets.
+     * @param {object} params - The payload to include with the request.
+     * @param {Boolean} many - If `true`, request expected to return an array.
+     * @return {Object|Array} - An empty object or array that becomes populated
+     * as the socket request is fulfilled.
+     */
     function populateQuery(from, params, many) {
       if (from[0] !== '/') from = '/'.concat(from);
       sailsSocket.outstanding++;
-      var result = many ? [] : {};
+      let result = many ? [] : {};
       socket.get(from, params, function(data) {
         angular.forEach(data, function(item, index) {
           if (many) {
@@ -62,8 +71,14 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
       return result;
     }
 
+    /**
+     * Search an array to find an object by it's `id` property.
+     * @param {Object[]} arr - The array to search.
+     * @param {string|number} id - The `id` property to match.
+     * @return {number} - The location of the object in the array.
+     */
     function findIndexById(arr, id) {
-      var found = null;
+      let found = null;
       angular.forEach(arr, function(value, index) {
         if (value.id === id) found = index;
       });
@@ -114,12 +129,15 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         cb = cb || function() {};
         scope.$watch(what, function(newValue, oldValue) {
           if (!newValue || !oldValue) return;
-          var payload = {};
+          let payload = {};
 
-          for (var i = 0, len = editableFields.length; i < len; i++) {
-            var field = editableFields[i];
+          for (let i = 0, len = editableFields.length; i < len; i++) {
+            let field = editableFields[i];
 
-            if (angular.isUndefined(newValue[field]) || (angular.isDefined(oldValue[field]) && newValue[field].toString() === oldValue[field].toString())) {
+            if (angular.isUndefined(newValue[field]) || (
+              angular.isDefined(oldValue[field]) &&
+              newValue[field].toString() === oldValue[field].toString()
+            )) {
               continue;
             }
 
@@ -153,7 +171,7 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
           if (scope.id !== message.id || message.verb !== 'updated')
             return;
 
-          for (var field in message.data) {
+          for (let field in message.data) {
             if (message.data.hasOwnProperty(field)) {
               if (field === '_csrf') continue;
               scope[field] = message.data[field];
@@ -171,7 +189,6 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         //   {model: "task", verb: "updated", data: Object, id: 3}
         //   {model: "task", verb: "destroyed", id: 20}
         socket.on(model, function(message) {
-
           switch (message.verb) {
 
           case 'created':
@@ -180,29 +197,26 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
             break;
 
           case 'destroyed':
-            var deleteIndex = findIndexById(scope, message.id);
+            const deleteIndex = findIndexById(scope, message.id);
             if (deleteIndex !== null) {
               scope.splice(deleteIndex, 1);
             }
             break;
 
           case 'updated':
-            var updateIndex = findIndexById(scope, message.id);
+            const updateIndex = findIndexById(scope, message.id);
             if (updateIndex !== null) {
               angular.extend(scope[updateIndex], message.data);
             }
             break;
 
-          default: return console.log('Unhandled socket action: ' + message.verb);
-
+          default: console.log(`Unhandled socket action: ${message.verb}`);
           }
           $rootScope.$apply();
           if (typeof cb === 'function') cb();
         });
-      }
+      },
 
     };
-
   }];
-
 });

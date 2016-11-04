@@ -1,6 +1,6 @@
 describe('default configuration', function() {
 
-  var sailsSocket, socketProvider, $rootScope;
+  var sailsSocket, socketProvider, $rootScope, $httpBackend;
 
   beforeEach(angular.mock.module('bethel.sailsSocket'));
   beforeEach(angular.mock.module('ngMock'));
@@ -13,8 +13,8 @@ describe('default configuration', function() {
     sailsSocket = $injector.get('sailsSocket');
     $rootScope = $injector.get('$rootScope');
 
-    httpBackend = $injector.get('$httpBackend');
-    httpBackend.whenGET(/csrfToken/).respond(200, { _csrf: 'abcd1234' });
+    $httpBackend = $injector.get('$httpBackend');
+    $httpBackend.whenGET(/csrfToken/).respond(200, { _csrf: 'abcd1234' });
   }));
 
   it('wraps the Sails socket.io service with default configuration', function() {
@@ -24,7 +24,7 @@ describe('default configuration', function() {
   });
 
   it('fetches the CSRF token over HTTP', function() {
-    httpBackend.flush();
+    $httpBackend.flush();
     expect(socketProvider.csrf).toEqual('abcd1234');
   });
 

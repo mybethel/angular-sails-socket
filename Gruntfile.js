@@ -1,23 +1,21 @@
 module.exports = function(grunt) {
-  'use strict';
-
   grunt.initConfig({
 
     babel: {
       options: {
-        presets: ['es2015']
+        presets: ['es2015'],
       },
       dist: {
         files: {
-          'dist/angular-sails-socket.js': ['src/*.js', '!src/*.spec.js']
-        }
-      }
+          'dist/angular-sails-socket.js': ['src/*.js', '!src/*.spec.js'],
+        },
+      },
     },
 
     clean: ['dist'],
 
     eslint: {
-      target: ['Gruntfile.js', 'src/*.js', '!src/*.spec.js', 'test/**/*.js']
+      target: ['Gruntfile.js', 'src/*.js', '!src/*.spec.js', 'test/**/*.js'],
     },
 
     pkg: grunt.file.readJSON('package.json'),
@@ -32,14 +30,14 @@ module.exports = function(grunt) {
                 '(function(angular, io) {',
         footer: '})(angular, io);',
         preserveComments: false,
-        report: 'min'
+        report: 'min',
       },
       dist: {
         files: {
-          'dist/angular-sails-socket.min.js': ['dist/angular-sails-socket.js']
-        }
-      }
-    }
+          'dist/angular-sails-socket.min.js': ['dist/angular-sails-socket.js'],
+        },
+      },
+    },
 
   });
 
@@ -47,5 +45,4 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['eslint']);
   grunt.registerTask('default', ['eslint', 'babel', 'uglify']);
-
 };
