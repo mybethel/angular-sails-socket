@@ -39,6 +39,13 @@
     "extends": "google",
     "parserOptions": {
       "ecmaVersion": 6
+    },
+    "globals": {
+      "io": true,
+      "angular": true
+    },
+    "rules": {
+      "curly": 0
     }
   },
   "babel": {

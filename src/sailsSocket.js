@@ -8,8 +8,9 @@ if (typeof io !== 'undefined' && io.sails) {
 }
 
 angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
-  if (typeof io === 'undefined' || !io.sails)
+  if (typeof io === 'undefined' || !io.sails) {
     throw new Error('Missing required `sails.io.js` dependency.');
+  }
 
   // On sites which require a CSRF token, this can be injected in each request.
   // If your site is configured to not use a CSRF token, set this to `false` to
@@ -85,6 +86,20 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
       return found;
     }
 
+    /**
+     * Private helper to broadcast and reject when an error is encountered.
+     * Among other things, this can be used to detect `403` responses and
+     * display a login screen.
+     * @param {Promise.Error} rejectPromise - The reject callback.
+     * @param {Object} response - Data received in the response.
+     * @param {Object} data - A JSON WebSocket Response object.
+     * @return {Promise.Error} - Promise rejected.
+     */
+    function handleError(rejectPromise, response, data) {
+      $rootScope.$broadcast('sailsSocket:error', response, data);
+      return rejectPromise(data);
+    }
+
     return {
 
       io: socket,
@@ -92,7 +107,8 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
       get: function(where) {
         return $q(function(resolve, reject) {
           socket.get(where, function(data, response) {
-            return (response.statusCode < 400) ? resolve(data) : reject(data);
+            return (response.statusCode < 400) ?
+              resolve(data) : handleError(reject, response, data);
           });
         });
       },
@@ -101,7 +117,8 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         what._csrf = sailsSocket.csrf;
         return $q(function(resolve, reject) {
           socket.post(where, what, function(data, response) {
-            return (response.statusCode < 400) ? resolve(data) : reject(data);
+            return (response.statusCode < 400) ?
+              resolve(data) : handleError(reject, response, data);
           });
         });
       },
@@ -110,7 +127,8 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         what._csrf = sailsSocket.csrf;
         return $q(function(resolve, reject) {
           socket.put(where, what, function(data, response) {
-            return (response.statusCode < 400) ? resolve(data) : reject(data);
+            return (response.statusCode < 400) ?
+              resolve(data) : handleError(reject, response, data);
           });
         });
       },
@@ -120,7 +138,8 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         what._csrf = sailsSocket.csrf;
         return $q(function(resolve, reject) {
           socket.delete(where, what, function(data, response) {
-            return (response.statusCode < 400) ? resolve(data) : reject(data);
+            return (response.statusCode < 400) ?
+              resolve(data) : handleError(reject, response, data);
           });
         });
       },
@@ -190,27 +209,27 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
         //   {model: "task", verb: "destroyed", id: 20}
         socket.on(model, function(message) {
           switch (message.verb) {
+            case 'created':
+              if (findIndexById(scope, message.id) !== null) return;
+              scope.unshift(message.data);
+              break;
 
-          case 'created':
-            if (findIndexById(scope, message.id) !== null) return;
-            scope.unshift(message.data);
-            break;
-
-          case 'destroyed':
-            const deleteIndex = findIndexById(scope, message.id);
-            if (deleteIndex !== null) {
-              scope.splice(deleteIndex, 1);
+            case 'destroyed': {
+              const deleteIndex = findIndexById(scope, message.id);
+              if (deleteIndex !== null) {
+                scope.splice(deleteIndex, 1);
+              }
+              break;
             }
-            break;
 
-          case 'updated':
-            const updateIndex = findIndexById(scope, message.id);
-            if (updateIndex !== null) {
-              angular.extend(scope[updateIndex], message.data);
+            case 'updated': {
+              const updateIndex = findIndexById(scope, message.id);
+              if (updateIndex !== null) {
+                angular.extend(scope[updateIndex], message.data);
+              }
+              break;
             }
-            break;
-
-          default: console.log(`Unhandled socket action: ${message.verb}`);
+            default: console.log(`Unhandled socket action: ${message.verb}`);
           }
           $rootScope.$apply();
           if (typeof cb === 'function') cb();
