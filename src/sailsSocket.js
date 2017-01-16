@@ -36,12 +36,12 @@ angular.module('bethel.sailsSocket', []).provider('sailsSocket', function() {
     const socket = connect(sailsSocket.url, sailsSocket.config);
 
     if (this.csrf !== false) {
-      $http.get('/csrfToken').success(function(data) {
-        if (!data) {
+      $http.get('/csrfToken').then(function(response) {
+        if (!response.data) {
           sailsSocket.csrf = false;
           return;
         }
-        sailsSocket.csrf = data._csrf;
+        sailsSocket.csrf = response.data._csrf;
       });
     }
 
